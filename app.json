@@ -12,7 +12,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.develobing.MusicMe"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,6 +23,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "51379f68-6fe1-4c93-ad9b-ec607c0f76c2"
+      }
+    },
+    "owner": "develobing"
   }
 }

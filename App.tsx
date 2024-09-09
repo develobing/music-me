@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CurrentlyPlayingScreen } from './screens/CurrentlyPlayingScreen';
 import { LibraryScreen } from './screens/LibraryScreen';
+import { TrackPlayerProvider } from './hooks/useTrackPlayer';
 
 export type RootStackParamList = {
   Library: undefined;
@@ -13,20 +14,22 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootStack.Navigator initialRouteName="Library">
-        <RootStack.Screen
-          name="Library"
-          component={LibraryScreen}
-          options={{ title: 'MusicMe' }}
-        />
-        <RootStack.Screen
-          name="CurrentlyPlaying"
-          component={CurrentlyPlayingScreen}
-          options={{ presentation: 'modal', headerShown: false }}
-        />
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <TrackPlayerProvider>
+      <NavigationContainer>
+        <RootStack.Navigator initialRouteName="Library">
+          <RootStack.Screen
+            name="Library"
+            component={LibraryScreen}
+            options={{ title: 'MusicMe' }}
+          />
+          <RootStack.Screen
+            name="CurrentlyPlaying"
+            component={CurrentlyPlayingScreen}
+            options={{ presentation: 'modal', headerShown: false }}
+          />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </TrackPlayerProvider>
   );
 }
 
