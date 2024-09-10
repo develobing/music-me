@@ -1,10 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  DefaultTheme,
+  NavigationContainer,
+  Theme,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet } from 'react-native';
+import { TrackPlayerProvider } from './hooks/useTrackPlayer';
 import { CurrentlyPlayingScreen } from './screens/CurrentlyPlayingScreen';
 import { LibraryScreen } from './screens/LibraryScreen';
-import { TrackPlayerProvider } from './hooks/useTrackPlayer';
 
 export type RootStackParamList = {
   Library: undefined;
@@ -12,11 +15,26 @@ export type RootStackParamList = {
 };
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
+const theme: Theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#343a40',
+    text: '#fff',
+  },
+};
+
 export default function App() {
   return (
     <TrackPlayerProvider>
-      <NavigationContainer>
-        <RootStack.Navigator initialRouteName="Library">
+      <NavigationContainer theme={theme}>
+        <RootStack.Navigator
+          initialRouteName="Library"
+          screenOptions={{
+            headerStyle: { backgroundColor: '#343a40' },
+            headerTitleStyle: { color: '#fff' },
+          }}
+        >
           <RootStack.Screen
             name="Library"
             component={LibraryScreen}
