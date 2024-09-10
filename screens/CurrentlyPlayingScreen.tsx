@@ -1,26 +1,38 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ActivityIndicator,
-} from 'react-native';
-import { useTrackPlayer } from '../hooks/useTrackPlayer';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 import { IconButton } from '../components/IconButton';
 import { PlayPauseButton } from '../components/PlayPauseButton';
+import { useTrackPlayer } from '../hooks/useTrackPlayer';
+import Slider from '@react-native-community/slider';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
 
 export function CurrentlyPlayingScreen() {
-  const { activeTrack, isLoading, isBuffering, previous, next } =
-    useTrackPlayer();
-  const loading = isLoading || isBuffering;
+  const navigator =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const {
+    tracks,
+    activeTrack,
+    activeTrackIndex,
+    isLoading,
+    position,
+    duration,
+    previous,
+    next,
+    seekTo,
+  } = useTrackPlayer();
+  const loading = isLoading;
 
   if (!activeTrack) return null;
 
   return (
     <View style={styles.container}>
       <View style={styles.topControls}>
-        <IconButton name="chevron-left" size={20} />
+        <IconButton
+          name="chevron-left"
+          size={32}
+          onPress={() => navigator.navigate('Library')}
+        />
       </View>
 
       <View style={styles.content}>
@@ -35,14 +47,30 @@ export function CurrentlyPlayingScreen() {
           )}
           <Text style={styles.title}>{activeTrack.title}</Text>
 
+          <Slider
+            minimumTrackTintColor="purple"
+            maximumTrackTintColor="white"
+            minimumValue={0}
+            maximumValue={duration}
+            value={position}
+            style={styles.slider}
+            onValueChange={seekTo}
+          />
+
           <View style={styles.controlsContainer}>
-            <IconButton name="arrow-left" size={35} onPress={previous} />
-            <PlayPauseButton
-              size={50}
-              disabled={loading}
-              style={{ opacity: loading ? 0.5 : 1 }}
+            <IconButton
+              name="arrow-left"
+              size={35}
+              onPress={previous}
+              disabled={activeTrackIndex <= 0}
             />
-            <IconButton name="arrow-right" size={35} onPress={next} />
+            <PlayPauseButton size={50} disabled={loading} />
+            <IconButton
+              name="arrow-right"
+              size={35}
+              onPress={next}
+              disabled={activeTrackIndex === tracks.length - 1}
+            />
           </View>
         </View>
       </View>
@@ -69,7 +97,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -50,
   },
 
   artwork: {
@@ -81,6 +108,10 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 24,
     color: 'white',
+  },
+
+  slider: {
+    width: 250,
   },
 
   controlsContainer: {

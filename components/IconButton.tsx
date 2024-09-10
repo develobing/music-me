@@ -12,6 +12,7 @@ export function IconButton(props: ComponentProps<typeof FontAwesome.Button>) {
       style={{
         ...props.style,
         padding: 0,
+        opacity: props.disabled ? 0.5 : 1,
       }}
       iconStyle={{
         ...props.iconStyle,

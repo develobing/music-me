@@ -5,12 +5,16 @@ import TrackPlayer, {
   Track,
   useActiveTrack,
   usePlaybackState,
+  useProgress,
 } from 'react-native-track-player';
 import defaultTracks from '../data/defaultTracks.json';
 
 type TrackPlayerContextType = {
   tracks: Track[];
   activeTrack?: Track;
+  activeTrackIndex: number;
+  position: number;
+  duration: number;
   isPlaying: boolean;
   isLoading: boolean;
   isBuffering: boolean;
@@ -20,12 +24,14 @@ type TrackPlayerContextType = {
   skip: (index: number) => void;
   previous: () => void;
   next: () => void;
+  seekTo: (position: number) => void;
 };
 
 const TrackPlayerContext = React.createContext({} as TrackPlayerContextType);
 
 export function TrackPlayerProvider({ children }: { children: ReactNode }) {
   const { state } = usePlaybackState();
+  const { position, duration } = useProgress();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [isPlayerSetup, setIsPlayerSetup] = useState(false);
 
@@ -33,6 +39,9 @@ export function TrackPlayerProvider({ children }: { children: ReactNode }) {
   const isLoading = state === State.Loading;
   const isBuffering = state === State.Buffering;
   const activeTrack = useActiveTrack();
+  const activeTrackIndex = activeTrack
+    ? tracks.findIndex((track) => track.title === activeTrack.title)
+    : -1;
 
   const play = () => TrackPlayer.play();
   const pause = () => TrackPlayer.pause();
@@ -40,6 +49,7 @@ export function TrackPlayerProvider({ children }: { children: ReactNode }) {
   const skip = (index: number) => TrackPlayer.skip(index);
   const previous = () => TrackPlayer.skipToPrevious();
   const next = () => TrackPlayer.skipToNext();
+  const seekTo = (position: number) => TrackPlayer.seekTo(position);
 
   useEffect(() => {
     if (!isPlayerSetup) {
@@ -53,6 +63,7 @@ export function TrackPlayerProvider({ children }: { children: ReactNode }) {
         ],
       });
 
+      TrackPlayer.reset();
       TrackPlayer.add(defaultTracks);
       setTracks(defaultTracks);
       setIsPlayerSetup(true);
@@ -64,6 +75,9 @@ export function TrackPlayerProvider({ children }: { children: ReactNode }) {
       value={{
         tracks,
         activeTrack,
+        activeTrackIndex,
+        position,
+        duration,
         isPlaying,
         isLoading,
         isBuffering,
@@ -73,6 +87,7 @@ export function TrackPlayerProvider({ children }: { children: ReactNode }) {
         skip,
         previous,
         next,
+        seekTo,
       }}
     >
       {children}
