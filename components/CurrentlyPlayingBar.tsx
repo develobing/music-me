@@ -2,8 +2,14 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTrackPlayer } from '../hooks/useTrackPlayer';
 import { TrackRow } from './TrackRow';
 import { IconButton } from './IconButton';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
+import { PlayPauseButton } from './PlayPauseButton';
 
 export function CurrentlyPlayingBar() {
+  const navigator =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { activeTrack, isPlaying, play, pause } = useTrackPlayer();
 
   if (!activeTrack) {
@@ -11,19 +17,18 @@ export function CurrentlyPlayingBar() {
   }
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.trackDetailsContainer}>
-        <TrackRow track={activeTrack} onPress={() => {}} />
+        <TrackRow
+          track={activeTrack}
+          onPress={() => navigator.navigate('CurrentlyPlaying')}
+        />
       </View>
 
       <View style={styles.playPauseButtonContainer}>
-        {isPlaying ? (
-          <IconButton name="pause-circle" size={35} onPress={pause} />
-        ) : (
-          <IconButton name="play-circle" size={35} onPress={play} />
-        )}
+        <PlayPauseButton size={35} />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
