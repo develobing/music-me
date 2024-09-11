@@ -1,11 +1,12 @@
-import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
-import { IconButton } from '../components/IconButton';
-import { PlayPauseButton } from '../components/PlayPauseButton';
-import { useTrackPlayer } from '../hooks/useTrackPlayer';
 import Slider from '@react-native-community/slider';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { RootStackParamList } from '../App';
+import { Artwork } from '../components/Artwork';
+import { IconButton } from '../components/IconButton';
+import { PlayPauseButton } from '../components/PlayPauseButton';
+import { useTrackPlayer } from '../hooks/useTrackPlayer';
 
 export function CurrentlyPlayingScreen() {
   const navigator =
@@ -37,14 +38,23 @@ export function CurrentlyPlayingScreen() {
 
       <View style={styles.content}>
         <View style={styles.trackDetailsContainer}>
-          {isLoading ? (
-            <ActivityIndicator size={250} color="white" />
-          ) : (
-            <Image
+          <View>
+            <Artwork
               source={{ uri: activeTrack.artwork }}
               style={styles.artwork}
             />
-          )}
+
+            {isLoading && (
+              <View
+                style={{
+                  position: 'absolute',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                <ActivityIndicator size={250} color="white" />
+              </View>
+            )}
+          </View>
           <Text style={styles.title}>{activeTrack.title}</Text>
 
           <Slider

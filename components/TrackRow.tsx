@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Track } from 'react-native-track-player';
+import { Artwork } from './Artwork';
 
 type TrackRowProps = {
   track: Track;
@@ -9,7 +10,7 @@ type TrackRowProps = {
 export function TrackRow({ track, onPress }: TrackRowProps) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      <Image source={{ uri: track.artwork }} style={styles.artwork} />
+      <Artwork source={{ uri: track.artwork }} style={styles.artwork} />
       <Text style={styles.title}>{track.title}</Text>
     </TouchableOpacity>
   );
