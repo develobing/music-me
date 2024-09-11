@@ -51,22 +51,26 @@ export function TrackPlayerProvider({ children }: { children: ReactNode }) {
   const next = () => TrackPlayer.skipToNext();
   const seekTo = (position: number) => TrackPlayer.seekTo(position);
 
+  const initPlayer = async () => {
+    await TrackPlayer.setupPlayer();
+    await TrackPlayer.updateOptions({
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
+      ],
+    });
+
+    await TrackPlayer.reset();
+    await TrackPlayer.add(defaultTracks);
+    setTracks(defaultTracks);
+    setIsPlayerSetup(true);
+  };
+
   useEffect(() => {
     if (!isPlayerSetup) {
-      TrackPlayer.setupPlayer();
-      TrackPlayer.updateOptions({
-        capabilities: [
-          Capability.Play,
-          Capability.Pause,
-          Capability.SkipToNext,
-          Capability.SkipToPrevious,
-        ],
-      });
-
-      TrackPlayer.reset();
-      TrackPlayer.add(defaultTracks);
-      setTracks(defaultTracks);
-      setIsPlayerSetup(true);
+      initPlayer();
     }
   }, [isPlayerSetup]);
 

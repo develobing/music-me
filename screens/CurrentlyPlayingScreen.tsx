@@ -60,6 +60,7 @@ export function CurrentlyPlayingScreen() {
           <Slider
             minimumTrackTintColor="purple"
             maximumTrackTintColor="white"
+            thumbTintColor="white"
             minimumValue={0}
             maximumValue={duration}
             value={position}
